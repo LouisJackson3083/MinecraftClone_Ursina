@@ -1,37 +1,29 @@
 from ursina import *
+from ursina.prefabs.first_person_controller import FirstPersonController
 
-class Test_cube(Entity):
-    def __init__(self):
-        super().__init__(
-            model = 'cube',
-            color = color.white,
-            texture = 'white_cube',
-            rotation = Vec3(45,45,45)
-        )
-    def input(self,key):
-        if self.hovered:
-            if key == 'left mouse down':
-                print('Button Pressed')
-
-class Test_button(Button):
-    def __init__(self):
+class Voxel(Button):
+    def __init__(self, position = (0,0,0)):
         super().__init__(
             parent = scene,
+            position = position,
             model = 'cube',
-            texture = 'brick',
-            color = color.blue,
-            highlight_color = color.red,
-            pressed_color = color.green)
+            origin_y = 0.5,
+            texture = 'white_cube',
+            color = color.color(0,0,random.uniform(0.9,1)),
+            highlight_color = color.lime)
     def input(self,key):
         if self.hovered:
             if key == 'left mouse down':
-                print("AAAAAAAAAAAAAAAAA")
-def update():
-    if held_keys['a']:
-        print("Pressed A")
+                destroy(self)
+            if key == 'right mouse down':
+                voxel = Voxel(position = self.position + mouse.normal)
 
 app = Ursina()
 
-test_cube = Test_button()
+for z in range(20):
+    for x in range(20):
+        voxel = Voxel(position = (x,0,z))
+
+player = FirstPersonController()
 
 app.run()
