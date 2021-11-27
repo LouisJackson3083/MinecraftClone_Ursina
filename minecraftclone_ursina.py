@@ -21,20 +21,16 @@ class Test_button(Button):
             texture = 'brick',
             color = color.blue,
             highlight_color = color.red,
-            pressed_color = color.green
-        )
-
+            pressed_color = color.green)
+    def input(self,key):
+        if self.hovered:
+            if key == 'left mouse down':
+                print("AAAAAAAAAAAAAAAAA")
 def update():
     if held_keys['a']:
-        test_square.x -= 5 * time.dt
-        test_square.y -= 5 * time.dt
+        print("Pressed A")
 
 app = Ursina()
-
-test_square = Entity(model = 'quad', color = color.red, scale = (1,4), position = (5,4))
-
-# tamarin_texture = load_texture('assets/tamarin.jpg')
-# tamarin = Entity(model = 'quad', texture = tamarin_texture, scale = (5,5))
 
 test_cube = Test_button()
 
