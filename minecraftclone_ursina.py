@@ -2,36 +2,40 @@ from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 app = Ursina()
 
-grass_texture = load_texture('assets/grass_block.png')
-dirt_texture = load_texture('assets/dirt_block.png')
-stone_texture = load_texture('assets/stone_block.png')
-brick_texture = load_texture('assets/brick_block.png')
-sky_texture = load_texture('assets/skybox.png')
-arm_texture = load_texture('assets/arm_texture.png')
-punch_sound = Audio('assets/punch_sound', loop = False, autoplay = False)
-block_pick = 1
+# region textures
+texture_grass = load_texture('assets/textures/block_grass.png')
+texture_dirt = load_texture('assets/textures/block_dirt.png')
+texture_stone = load_texture('assets/textures/block_stone.png')
+texture_brick = load_texture('assets/textures/block_brick.png')
+sky_texture = load_texture('assets/textures/skybox.png')
+texture_arm = load_texture('assets/textures/texture_arm.png')
+# endregion
+# region sound
+sound_punch = Audio('assets/sounds/sound_punch', loop = False, autoplay = False)
+# endregion
+hotbar_selection = 1
 
 window.fps_counter.enabled = False
 window.exit_button = False
 
 def update():
-    global block_pick
+    global hotbar_selection
     if held_keys['left mouse'] or held_keys['right mouse']:
         arm.active()
     else:
         arm.passive()
 
-    if held_keys['1']: block_pick = 1
-    if held_keys['2']: block_pick = 2
-    if held_keys['3']: block_pick = 3
-    if held_keys['4']: block_pick = 4
+    if held_keys['1']: hotbar_selection = 1
+    if held_keys['2']: hotbar_selection = 2
+    if held_keys['3']: hotbar_selection = 3
+    if held_keys['4']: hotbar_selection = 4
 
 class Voxel(Button):
-    def __init__(self, position = (0,0,0), texture = grass_texture):
+    def __init__(self, position = (0,0,0), texture = texture_grass):
         super().__init__(
             parent = scene,
             position = position,
-            model = 'assets/block',
+            model = 'assets/models/block',
             origin_y = 0.5,
             texture = texture,
             color = color.color(0,0,random.uniform(0.9,1)),
@@ -40,15 +44,15 @@ class Voxel(Button):
     def input(self,key):
         if self.hovered:
             if key == 'left mouse down':
-                punch_sound.play()
+                sound_punch.play()
                 destroy(self)
 
             if key == 'right mouse down':
-                punch_sound.play()
-                if block_pick == 1: voxel = Voxel(position = self.position + mouse.normal, texture = grass_texture)
-                if block_pick == 2: voxel = Voxel(position = self.position + mouse.normal, texture = dirt_texture)
-                if block_pick == 3: voxel = Voxel(position = self.position + mouse.normal, texture = stone_texture)
-                if block_pick == 4: voxel = Voxel(position = self.position + mouse.normal, texture = brick_texture)
+                sound_punch.play()
+                if hotbar_selection == 1: voxel = Voxel(position = self.position + mouse.normal, texture = texture_grass)
+                if hotbar_selection == 2: voxel = Voxel(position = self.position + mouse.normal, texture = texture_dirt)
+                if hotbar_selection == 3: voxel = Voxel(position = self.position + mouse.normal, texture = texture_stone)
+                if hotbar_selection == 4: voxel = Voxel(position = self.position + mouse.normal, texture = texture_brick)
 
 class Sky(Entity):
     def __init__(self):
@@ -63,8 +67,8 @@ class Arm(Entity):
     def __init__(self):
         super().__init__(
             parent = camera.ui,
-            model = 'assets/arm',
-            texture = arm_texture,
+            model = 'assets/models/arm',
+            texture = texture_arm,
             scale = 0.2,
             rotation = Vec3(160,-10,0),
             position = Vec2(0.6,-0.6))
@@ -75,13 +79,21 @@ class Arm(Entity):
         self.rotation =  Vec3(160,-10,0),
         self.position = Vec2(0.6,-0.6)
 
-for z in range(20):
-    for x in range(20):
-        voxel = Voxel(position = (x,0,z))
+level_parent = Entity(model=Mesh(vertices=[], uvs=[]))
+
+for z in range(8):
+    for x in range(8):
+        # height = round(GeneratedNoiseMap(z, x, 20) * maxHeight)
+        voxel = Voxel(position=(x, 0, z))
+        level_parent.model.vertices.extend(voxel.model.vertices)
+        
 
 player = FirstPersonController()
 arm = Arm()
 sky = Sky()
+player_collision_zone = CollisionZone(parent=player, radius=2)
+level_parent.collider = 'mesh' # call this only once after all vertices are set up
+print(level_parent.model.vertices)
 
 
 app.run()
