@@ -82,7 +82,7 @@ def create_chunk(xChunk,zChunk):
         for x in range(16):
             #height = round(GeneratedNoiseMap(z, x, 20) * maxHeight)
             voxel = Voxel(position=(x + xChunk*16, 0, z + zChunk*16), texture = random.choice(texture_grass))
-            voxel = Voxel(position=(x + xChunk*16, -1, z + zChunk*16), texture = texture_dirt)                
+            voxel = Voxel(position=(x + xChunk*16, -1, z + zChunk*16), texture = texture_dirt)         
 
 class Voxel(Button):
     def __init__(self, position = (0,0,0), texture = texture_grass[3]):
