@@ -3,10 +3,10 @@ from perlin_module import PerlinNoise
 class Perlin:
     def __init__(self):
 
-        self.seed = 123
-        self.octaves = 4
-        self.freq = 64
-        self.amp = 12
+        self.seed = self.getSeed("helloworld")
+        self.octaves = 8
+        self.freq = 256
+        self.amp = 24
 
         self.pNoise = PerlinNoise(  seed=self.seed,
                                     octaves=self.octaves)
@@ -14,3 +14,9 @@ class Perlin:
         y = 0
         y = self.pNoise([x/self.freq,z/self.freq])*self.amp
         return y
+
+    def getSeed(self, plainText):
+        cipherText = 0
+        for i in range(len(plainText)):
+            cipherText += ord(plainText[i])
+        return cipherText

@@ -25,8 +25,10 @@ def switch_playerGamemode():
     global playerGamemode
     if playerGamemode == 'survival':
         playerGamemode='creative'
+        player.speed = 16
     else:
         playerGamemode='survival'
+        player.speed = 8
 
 def input(key):
     if key == 'c':
@@ -34,17 +36,28 @@ def input(key):
     if key == 'x':
         switch_playerGamemode()
 
-    if playerGamemode == 'creative':
-        if key == 'f':
-            player.y += 5*time.dt
-        if key == 'g':
-            player.y -= 5*time.dt
+
 # endregion
 
+subsetCount = 10
 def update():
+    global subsetCount
+    subsetCount += 1
+    if subsetCount >= 10:
+        # Generate terrain at current swirl position
+        terrain.generateTerrain()
+        subsetCount = 0
+
     blockFound=False
     step = 2
     height = 1.86
+
+
+    if playerGamemode == 'creative':
+        if held_keys['space']:
+            player.y += 20*time.dt
+        if held_keys['shift']:
+            player.y -= 20*time.dt
 
     if playerGamemode == 'survival':
         x = str(floor(player.x+0.5))
@@ -60,9 +73,6 @@ def update():
             player.y = lerp(player.y, target, 6 * time.dt) # Lerp the player to the target position
         else:
             player.y -= 9.8 * time.dt # Apply gravity
-    # updateTerrain()
-    pass
 
-terrain.generateTerrain()
 
 app.run()
