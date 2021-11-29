@@ -89,7 +89,7 @@ class Voxel(Button):
         super().__init__(
             parent = scene,
             position = position,
-            model = 'assets/models/block',
+            model = 'assets/models/block2',
             origin_y = 0.5,
             texture = texture,
             color = color.color(0,0,random.uniform(0.9,1)),
@@ -141,7 +141,7 @@ class ArmBlock(Entity):
     def __init__(self, parent = camera.ui, texture = texture_grass[3]):
         super().__init__(
             parent = parent,
-            model = 'assets/models/block',
+            model = 'assets/models/block2',
             texture = texture,
             scale = 0.75,
             rotation = Vec3(180,0,0),
