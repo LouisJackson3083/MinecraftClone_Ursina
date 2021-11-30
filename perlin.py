@@ -3,7 +3,7 @@ from perlin_module import PerlinNoise
 class Perlin:
     def __init__(self):
 
-        self.seed = self.getSeed("helloworld")
+        self.seed = self.getSeed("yo")
         self.octaves = 8
         self.freq = 256
         self.amp = 24

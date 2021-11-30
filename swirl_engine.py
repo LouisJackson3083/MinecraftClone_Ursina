@@ -3,15 +3,11 @@ from ursina import Vec2
 class SwirlEngine:
     def __init__(self,subWidth):
         self.subWidth = subWidth
-
-        self.run = 1
-        self.iteration = 0
-        self.count = 0
-
+        
         # Tracks position of terrain subset being generated
         self.pos = Vec2(0,0)
+        self.reset(0,0)
 
-        self.cd = 0 # Current Direction
         self.dir = [Vec2(0,1), # Array of directions
                     Vec2(1,0),
                     Vec2(0,-1),
@@ -37,3 +33,12 @@ class SwirlEngine:
         else:
             self.count=0
             self.changeDirection()
+            self.move()
+
+    def reset(self,x,z):
+        self.pos.x = x
+        self.pos.y = z
+        self.run = 1
+        self.iteration = 0
+        self.count = 0
+        self.cd = 0 # Current Direction

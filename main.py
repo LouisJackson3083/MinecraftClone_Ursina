@@ -9,6 +9,8 @@ sky = Sky()
 sky.color = window.color
 player = FirstPersonController()
 player.gravity = 0.0
+player.height = 1.8
+player.camera_pivot.y = player.height
 player.cursor.visible = False
 playerGamemode = 'survival'
 
@@ -35,23 +37,26 @@ def input(key):
         switch_render_mode()
     if key == 'x':
         switch_playerGamemode()
-
-
 # endregion
 
-subsetCount = 10
+pX = player.x
+pZ = player.z
+
 def update():
-    global subsetCount
-    subsetCount += 1
-    if subsetCount >= 10:
-        # Generate terrain at current swirl position
-        terrain.generateTerrain()
-        subsetCount = 0
+    global pX, pZ
+
+    print(pX,pZ)
+    # Generate terrain at current swirl position
+    terrain.generateTerrain()
 
     blockFound=False
     step = 2
     height = 1.86
 
+    if abs(player.x - pX)>16 or abs(player.z - pZ)>16:
+        pX=player.x
+        pZ=player.z
+        terrain.swirlEngine.reset(pX,pZ)
 
     if playerGamemode == 'creative':
         if held_keys['space']:

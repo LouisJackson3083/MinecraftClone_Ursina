@@ -10,8 +10,8 @@ class MeshTerrain:
         self.numVertices = len(self.block.vertices)
 
         self.subsets = []
-        self.numSubsets = 512
-        self.subWidth = 8 # Width of chunk
+        self.numSubsets = 1024
+        self.subWidth = 4 # Width of chunk
         self.swirlEngine = SwirlEngine(self.subWidth)
         self.currentSubset = 0
 
@@ -21,7 +21,7 @@ class MeshTerrain:
         self.perlin = Perlin()
 
         for i in range(0,self.numSubsets):
-            e = Entity(model=Mesh(),
+            e = Entity(         model=Mesh(),
                         texture=self.textureAtlas)
             e.texture_scale*=128/e.texture.width # 128 is the width of the individual texture (32 * 4 bc 4 spaces)
             self.subsets.append(e)
@@ -46,10 +46,11 @@ class MeshTerrain:
         model.uvs.extend([Vec2(uu,uv) + u for u in self.block.uvs])
 
     def generateTerrain(self):
+
         # Get current position as we swirl around
         x = floor(self.swirlEngine.pos.x)
         z = floor(self.swirlEngine.pos.y)
-
+        
         distance = int(self.subWidth*0.5)
         count = 1
         for k in range(-distance,distance):
@@ -62,13 +63,12 @@ class MeshTerrain:
                     self.genBlock(x+k, y, z+j)
                     count+=1
 
-        print("Blocks generated: ",str(count),str(len(self.td)))
+        print("Blocks generated: ",str(count))
 
         # Current subset hack
         self.subsets[self.currentSubset].model.generate()
         if self.currentSubset<self.numSubsets-1:
             self.currentSubset+=1
         else: self.currentSubset=0
-        self.currentSubset+=1
 
         self.swirlEngine.move()
